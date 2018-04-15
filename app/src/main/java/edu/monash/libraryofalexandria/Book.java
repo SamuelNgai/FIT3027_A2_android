@@ -1,10 +1,13 @@
 package edu.monash.libraryofalexandria;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Samuel on 07/03/2018.
  */
 
-public class Book {
+public class Book implements Parcelable{
     private String mTitle;
     private String mISBN;
     private String mAuthor;
@@ -36,6 +39,17 @@ public class Book {
         this.mDescription = description;
     }
 
+    protected Book(Parcel in) {
+        this.mTitle = in.readString();
+        this.mISBN = in.readString();
+        this.mAuthor = in.readString();
+        this.mPublisher = in.readString();
+        this.mEdition = in.readInt();
+        this.mYearOfPub = in.readInt();
+        this.mGenre = in.readString();
+        this.mDescription = in.readString();
+    }
+
     public String getTitle() {return mTitle;}
     public String getISBN() {return mISBN;}
     public String getAuthor() {return mAuthor;}
@@ -54,23 +68,32 @@ public class Book {
     public void setGenre(String genre) {this.mGenre = genre;}
     public void setDescription(String description) {this.mDescription = description;}
 
-    public String summary() {
-        String edSuf;
-        if (mEdition == 1) {
-            edSuf = "st";
+    public static final Creator<Book> CREATOR = new Creator<Book>() {
+        @Override
+        public Book createFromParcel(Parcel in) {
+            return new Book(in);
         }
-        else if (mEdition == 2) {
-            edSuf = "nd";
+
+        @Override
+        public Book[] newArray(int size) {
+            return new Book[size];
         }
-        else if (mEdition == 3) {
-            edSuf = "rd";
-        }
-        else {
-            edSuf = "th";
-        }
-        return "Title: " + mTitle + "\nISBN: " + mISBN + "\nAuthor: " + mAuthor +
-                "\nPublisher: " + mPublisher + "\nEdition: " + mEdition + edSuf +
-                "\nYear of Publication: " + mYearOfPub + "\nGenre: " + mGenre +
-                "\nDescription: " + mDescription;
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(mTitle);
+        parcel.writeString(mISBN);
+        parcel.writeString(mAuthor);
+        parcel.writeString(mPublisher);
+        parcel.writeInt(mEdition);
+        parcel.writeInt(mYearOfPub);
+        parcel.writeString(mGenre);
+        parcel.writeString(mDescription);
     }
 }
